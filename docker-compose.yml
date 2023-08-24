@@ -1,0 +1,26 @@
+version: '3'
+services:
+  redis-cluster:
+    build:
+      context: ./redis_docker
+      dockerfile: Dockerfile_redis
+    ports:
+      - "30001:30001"
+      - "30002:30002"
+      - "30003:30003"
+      - "30004:30004"
+      - "30005:30005"
+      - "30006:30006"
+
+  poc:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - redis-cluster
+    environment:
+      - REDIS_IP_ADD=redis-cluster
+    ports:
+      - "8080:8080"
+
+

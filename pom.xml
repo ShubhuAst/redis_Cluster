@@ -11,6 +11,7 @@
 	<groupId>com.cluster</groupId>
 	<artifactId>redis</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
 	<name>redis</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
@@ -48,6 +49,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<finalName>redis-cluster</finalName>
 	</build>
 
 </project>
