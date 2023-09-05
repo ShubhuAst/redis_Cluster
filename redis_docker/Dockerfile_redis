@@ -19,7 +19,15 @@ RUN make && \
 
 EXPOSE 30001 30002 30003 30004 30005 30006
 
-RUN echo "#!/bin/bash\ncd utils/create-cluster\nsed -i 's/PROTECTED_MODE=yes/PROTECTED_MODE=no/g' create-cluster\ncontainer_ip=\$(hostname -i)\nsed -i \"s/CLUSTER_HOST=127.0.0.1/CLUSTER_HOST=\${container_ip}/g\" create-cluster\n./create-cluster start\necho 'yes' | ./create-cluster create\nbash" > setup-cluster.sh
+RUN echo "#!/bin/bash" > setup-cluster.sh && \
+    echo "cd utils/create-cluster" >> setup-cluster.sh && \
+    echo "sed -i 's/PROTECTED_MODE=yes/PROTECTED_MODE=no/g' create-cluster" >> setup-cluster.sh && \
+    echo "container_ip=\$(hostname -i)" >> setup-cluster.sh && \
+    echo "sed -i \"s/CLUSTER_HOST=127.0.0.1/CLUSTER_HOST=\${container_ip}/g\" create-cluster" >> setup-cluster.sh && \
+    echo "./create-cluster start" >> setup-cluster.sh && \
+    echo "echo 'yes' | ./create-cluster create" >> setup-cluster.sh && \
+    #echo "\${container_ip} redis-cluster >> /etc/hosts" >> setup-cluster.sh && \
+    echo "bash" >> setup-cluster.sh
 
 RUN chmod +x setup-cluster.sh
 

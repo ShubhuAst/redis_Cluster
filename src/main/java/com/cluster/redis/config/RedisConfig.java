@@ -25,8 +25,7 @@ public class RedisConfig {
     @Value("${redis.jedis.pool.min-idle}")
     private int minIdle;
 
-    private String redis_ip = System.getenv("REDIS_IP_ADD");
-
+    private String redis_ip = "redis_cluster";
 
     @Bean
     public JedisClientConfiguration getJedisClientConfiguration() {

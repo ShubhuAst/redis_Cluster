@@ -49,7 +49,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
-		<finalName>redis-cluster</finalName>
+		<finalName>poc-redis-cluster</finalName>
 	</build>
 
 </project>

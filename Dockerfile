@@ -22,6 +22,6 @@ ENV MAVEN_VERSION=${MAVEN_VERSION}
 
 EXPOSE 8080
 
-COPY target/redis-cluster.jar app.jar
+COPY target/poc-redis-cluster.jar app.jar
 
 ENTRYPOINT ["java","-jar","/app.jar"]
