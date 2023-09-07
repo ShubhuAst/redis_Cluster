@@ -26,8 +26,7 @@ RUN echo "#!/bin/bash" > setup-cluster.sh && \
     echo "sed -i \"s/CLUSTER_HOST=127.0.0.1/CLUSTER_HOST=\${container_ip}/g\" create-cluster" >> setup-cluster.sh && \
     echo "./create-cluster start" >> setup-cluster.sh && \
     echo "echo 'yes' | ./create-cluster create" >> setup-cluster.sh && \
-    #echo "\${container_ip} redis-cluster >> /etc/hosts" >> setup-cluster.sh && \
-    echo "bash" >> setup-cluster.sh
+    echo "tail -f /dev/null" >> setup-cluster.sh
 
 RUN chmod +x setup-cluster.sh
 

@@ -5,14 +5,8 @@ services:
       context: ./redis_docker
       dockerfile: Dockerfile_redis
     hostname: redis_cluster
-    container_name: redis_cluster
     ports:
-      - "30001:30001"
-      - "30002:30002"
-      - "30003:30003"
-      - "30004:30004"
-      - "30005:30005"
-      - "30006:30006"
+      - "30001-30006:30001-30006/tcp"
     networks:
       - my-custom-network
 
