@@ -2,16 +2,20 @@ package com.cluster.redis.config;
 
 import com.cluster.redis.pojo.User;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.RedisClusterConfiguration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisNode;
 import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
@@ -25,7 +29,7 @@ public class RedisConfig {
     @Value("${redis.jedis.pool.min-idle}")
     private int minIdle;
 
-    private String redis_ip = "redis_cluster";
+    private String redis_ip = "127.0.0.1";
 
     @Bean
     public JedisClientConfiguration getJedisClientConfiguration() {
@@ -39,7 +43,7 @@ public class RedisConfig {
     }
 
     @Bean
-    public JedisConnectionFactory getJedisConnectionFactory() {
+    public JedisConnectionFactory getClusterConnectionFactory() {
         System.out.println("Ip of Redis container:" + redis_ip);
         RedisClusterConfiguration clusterConfig = new RedisClusterConfiguration();
         clusterConfig.addClusterNode(new RedisNode(redis_ip, 30001));
@@ -52,11 +56,10 @@ public class RedisConfig {
         return new JedisConnectionFactory(clusterConfig, getJedisClientConfiguration());
     }
 
-    @Bean
-    @Qualifier("cluster")
-    public RedisTemplate<String, Object> redisTemplate() {
+    @Bean(name = "cluster")
+    public RedisTemplate<String, Object> redisTemplateForCluster() {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(getJedisConnectionFactory());
+        template.setConnectionFactory(getClusterConnectionFactory());
         template.setKeySerializer(new StringRedisSerializer());
         template.setHashKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new JdkSerializationRedisSerializer());
@@ -66,8 +69,29 @@ public class RedisConfig {
     }
 
     @Bean
-    @Qualifier("hashOperations")
     public HashOperations<String, String, User> getRedisTemplateForHash() {
-        return redisTemplate().opsForHash();
+        return redisTemplateForCluster().opsForHash();
+    }
+
+    @Bean
+    public RedisConnectionFactory getStandaloneConnectionFactory() {
+        JedisConnectionFactory connectionFactory = new JedisConnectionFactory();
+        connectionFactory.setHostName("127.0.0.1");
+        connectionFactory.setPort(6379);
+        return connectionFactory;
+    }
+
+    @Bean(name = "standalone")
+    public RedisTemplate<String, String> redisTemplateForStandalone() {
+        RedisTemplate<String, String> template = new RedisTemplate<>();
+        template.setConnectionFactory(getStandaloneConnectionFactory());
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        return template;
+    }
+
+    @Bean
+    public RedisTemplate<String, String> redisTemplate() {
+        return redisTemplateForStandalone();
     }
 }
