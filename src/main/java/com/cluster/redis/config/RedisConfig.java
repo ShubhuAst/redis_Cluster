@@ -2,12 +2,9 @@ package com.cluster.redis.config;
 
 import com.cluster.redis.pojo.User;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.RedisClusterConfiguration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisNode;
@@ -29,7 +26,7 @@ public class RedisConfig {
     @Value("${redis.jedis.pool.min-idle}")
     private int minIdle;
 
-    private String redis_ip = "127.0.0.1";
+    private String redis_cluster_ip = "redis_cluster";
 
     @Bean
     public JedisClientConfiguration getJedisClientConfiguration() {
@@ -44,14 +41,14 @@ public class RedisConfig {
 
     @Bean
     public JedisConnectionFactory getClusterConnectionFactory() {
-        System.out.println("Ip of Redis container:" + redis_ip);
+        System.out.println("Ip of Redis container:" + redis_cluster_ip);
         RedisClusterConfiguration clusterConfig = new RedisClusterConfiguration();
-        clusterConfig.addClusterNode(new RedisNode(redis_ip, 30001));
-        clusterConfig.addClusterNode(new RedisNode(redis_ip, 30002));
-        clusterConfig.addClusterNode(new RedisNode(redis_ip, 30003));
-        clusterConfig.addClusterNode(new RedisNode(redis_ip, 30004));
-        clusterConfig.addClusterNode(new RedisNode(redis_ip, 30005));
-        clusterConfig.addClusterNode(new RedisNode(redis_ip, 30006));
+        clusterConfig.addClusterNode(new RedisNode(redis_cluster_ip, 30001));
+        clusterConfig.addClusterNode(new RedisNode(redis_cluster_ip, 30002));
+        clusterConfig.addClusterNode(new RedisNode(redis_cluster_ip, 30003));
+        clusterConfig.addClusterNode(new RedisNode(redis_cluster_ip, 30004));
+        clusterConfig.addClusterNode(new RedisNode(redis_cluster_ip, 30005));
+        clusterConfig.addClusterNode(new RedisNode(redis_cluster_ip, 30006));
 
         return new JedisConnectionFactory(clusterConfig, getJedisClientConfiguration());
     }
@@ -76,8 +73,8 @@ public class RedisConfig {
     @Bean
     public RedisConnectionFactory getStandaloneConnectionFactory() {
         JedisConnectionFactory connectionFactory = new JedisConnectionFactory();
-        connectionFactory.setHostName("127.0.0.1");
-        connectionFactory.setPort(6379);
+        connectionFactory.setHostName("redis-standalone");
+        connectionFactory.setPort(30007);
         return connectionFactory;
     }
 

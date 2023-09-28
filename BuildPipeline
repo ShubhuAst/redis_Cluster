@@ -1,0 +1,46 @@
+#!groovy
+
+pipeline {
+    agent any
+
+    tools {
+        maven "maven-3.9.4"
+    }
+
+    stages {
+
+        stage('Build') {
+            steps {
+                git branch: 'main', url: 'https://github.com/ShubhuAst/redis_Cluster'
+                sh "mvn clean install"
+            }
+            post {
+                success {
+                    junit '**/target/surefire-reports/TEST-*.xml'
+                    archiveArtifacts 'target/*.jar'
+                }
+            }
+        }
+
+        stage('Build Docker Image'){
+            script{
+                sh "docker build -t astshubhu/user-mgmt ."
+            }
+        }
+
+        stage('Push Docker Image to Hub'){
+            script{
+                withCredentials([string(credentialsId: 'dockerHubCred', variable: 'docker_hub_cred')]) {
+                    sh "docker login -u astshubhu -p ${docker_hub_cred}"
+                }
+                sh "docker push astshubhu/user-mgmt"
+            }
+        }
+
+//        stage{
+//            steps('Trigger Deploy user-mgmt') {
+//                build job: 'deploy-user-mgmt'
+//            }
+//        }
+    }
+}
