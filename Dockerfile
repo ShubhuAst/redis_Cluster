@@ -20,7 +20,7 @@ ENV MAVEN_HOME=/opt/maven
 ENV JAVA_VERSION=${JAVA_VERSION}
 ENV MAVEN_VERSION=${MAVEN_VERSION}
 
-EXPOSE 8080
+EXPOSE 8083
 
 COPY target/poc-redis-cluster.jar app.jar
 
