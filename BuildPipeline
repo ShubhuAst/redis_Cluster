@@ -14,12 +14,6 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/ShubhuAst/redis_Cluster'
                 sh "mvn clean install"
             }
-            post {
-                success {
-                    junit '**/target/surefire-reports/TEST-*.xml'
-                    archiveArtifacts 'target/*.jar'
-                }
-            }
         }
 
         stage('Build Docker Image') {
