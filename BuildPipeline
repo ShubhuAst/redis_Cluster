@@ -22,15 +22,15 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image'){
-            steps{
-                script{
+        stage('Build Docker Image') {
+            steps {
+                script {
                     sh "docker build -t astshubhu/user-mgmt ."
                 }
             }
         }
 
-        stage('Push Docker Image to Hub'){
+        stage('Push Docker Image to Hub') {
             steps {
                 script {
                     withCredentials([string(credentialsId: 'dockerHubCred', variable: 'docker_hub_cred')]) {
@@ -41,8 +41,8 @@ pipeline {
             }
         }
 
-//        stage{
-//            steps('Trigger Deploy user-mgmt') {
+//        stage('Trigger Deploy user-mgmt') {
+//            steps {
 //                build job: 'deploy-user-mgmt'
 //            }
 //        }
