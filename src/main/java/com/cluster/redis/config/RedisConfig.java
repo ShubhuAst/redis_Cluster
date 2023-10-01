@@ -26,7 +26,9 @@ public class RedisConfig {
     @Value("${redis.jedis.pool.min-idle}")
     private int minIdle;
 
-    private String redis_cluster_ip = "redis_cluster";
+    private String host_redis_cluster = System.getenv("REDIS_CLUSTER_HOST");
+    private String host_redis_standalone = System.getenv("REDIS_STANDALONE_HOST");
+
 
     @Bean
     public JedisClientConfiguration getJedisClientConfiguration() {
@@ -41,14 +43,14 @@ public class RedisConfig {
 
     @Bean
     public JedisConnectionFactory getClusterConnectionFactory() {
-        System.out.println("Ip of Redis container:" + redis_cluster_ip);
+        System.out.println("Ip of Redis container:" + host_redis_cluster);
         RedisClusterConfiguration clusterConfig = new RedisClusterConfiguration();
-        clusterConfig.addClusterNode(new RedisNode(redis_cluster_ip, 30001));
-        clusterConfig.addClusterNode(new RedisNode(redis_cluster_ip, 30002));
-        clusterConfig.addClusterNode(new RedisNode(redis_cluster_ip, 30003));
-        clusterConfig.addClusterNode(new RedisNode(redis_cluster_ip, 30004));
-        clusterConfig.addClusterNode(new RedisNode(redis_cluster_ip, 30005));
-        clusterConfig.addClusterNode(new RedisNode(redis_cluster_ip, 30006));
+        clusterConfig.addClusterNode(new RedisNode(host_redis_cluster, 30001));
+        clusterConfig.addClusterNode(new RedisNode(host_redis_cluster, 30002));
+        clusterConfig.addClusterNode(new RedisNode(host_redis_cluster, 30003));
+        clusterConfig.addClusterNode(new RedisNode(host_redis_cluster, 30004));
+        clusterConfig.addClusterNode(new RedisNode(host_redis_cluster, 30005));
+        clusterConfig.addClusterNode(new RedisNode(host_redis_cluster, 30006));
 
         return new JedisConnectionFactory(clusterConfig, getJedisClientConfiguration());
     }

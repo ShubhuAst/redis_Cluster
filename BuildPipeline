@@ -35,10 +35,10 @@ pipeline {
             }
         }
 
-//        stage('Trigger Deploy user-mgmt') {
-//            steps {
-//                build job: 'deploy-user-mgmt'
-//            }
-//        }
+        stage('Trigger Deploy user-mgmt') {
+            steps {
+                build job: 'deploy-user-mgmt'
+            }
+        }
     }
 }
