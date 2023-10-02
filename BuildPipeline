@@ -36,6 +36,22 @@ pipeline {
         }
     }
     post {
+        always {
+            script {
+                def recipients = 'shubham.asthana@tothenew.com'
+                def subject = "${currentBuild.projectName} - Build # ${currentBuild.number} - ${currentBuild.result}!"
+                def body = """
+                            ${currentBuild.projectName} - Build # ${currentBuild.number} - ${currentBuild.result}:
+    
+                            Check console output at ${currentBuild.absoluteUrl} to view the results.
+                           """
+                emailext(
+                        to: recipients,
+                        subject: subject,
+                        body: body
+                )
+            }
+        }
         success {
             build job: 'deploy-user-mgmt'
         }
